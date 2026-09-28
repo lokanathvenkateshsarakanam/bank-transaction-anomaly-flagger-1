@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bank Transaction Anomaly Flagger | SOC Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="logo-area">
+      <div class="logo-icon">🛡️</div>
+      <div class="logo-text">
+        <h1>Bank Transaction Anomaly Flagger <span class="badge-tag">First-Pass Screen</span></h1>
+        <div class="sub-tagline">DMGT U1/U2 • AI U1 • ADSA U2 • OOPJ • Bottle Micro-Web • Snowflake Framework</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="runFullBenchmark()">⚡ Run Benchmark</button>
+      <button class="btn btn-primary" onclick="refreshWarehouseData()">🔄 Refresh Warehouse</button>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs">
+    <button class="tab-btn active" data-tab="tab-screener">⚡ Live Screener</button>
+    <button class="tab-btn" data-tab="tab-graph">🕸️ ADSA Network Graph</button>
+    <button class="tab-btn" data-tab="tab-dmgt">📐 DMGT Logic & Relations Lab</button>
+    <button class="tab-btn" data-tab="tab-snowflake">❄️ Snowflake Warehouse Ledger</button>
+    <button class="tab-btn" data-tab="tab-curriculum">📚 Syllabus Architecture</button>
+  </nav>
+
+  <!-- Main Viewport -->
+  <main>
+    <!-- Metrics Row -->
+    <div class="stats-banner">
+      <div class="stat-card">
+        <div class="stat-label">Snowflake Ledger Records</div>
+        <div class="stat-value" id="stat-total-txns">-</div>
+        <div class="stat-subtext">Persisted in FACT_TRANSACTIONS</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Mean Network Risk</div>
+        <div class="stat-value" id="stat-avg-risk">-</div>
+        <div class="stat-subtext">Posterior fraud belief P(Fraud)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Volume Screened</div>
+        <div class="stat-value" id="stat-total-vol">-</div>
+        <div class="stat-subtext">Processed financial capital</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">ID Generator Status</div>
+        <div class="stat-value" style="font-size: 18px; color: var(--accent-purple);">64-bit Snowflake</div>
+        <div class="stat-subtext">Twitter spec • Zero collisions</div>
+      </div>
+    </div>
+
+    <!-- TAB 1: Live Screener -->
+    <div id="tab-screener" class="tab-content active">
+      <div class="two-col-grid">
+        <!-- Input Form -->
+        <div class="card">
+          <div class="card-title">
+            <span>Transaction Payload</span>
+            <span class="badge-tag">Sensors</span>
+          </div>
+
+          <!-- Presets -->
+          <div class="presets-container">
+            <div class="presets-label">Quick Scenario Presets:</div>
+            <div class="preset-pills">
+              <button class="preset-pill" onclick="applyPreset('routine')">Routine $45 (Benign)</button>
+              <button class="preset-pill" onclick="applyPreset('ato')">ATO $4,500 (DMGT Logic)</button>
+              <button class="preset-pill" onclick="applyPreset('cycle')">Cycle $9,300 (ADSA Graph)</button>
+              <button class="preset-pill" onclick="applyPreset('smurf')">Smurfing $9,200 (Fan-In)</button>
+              <button class="preset-pill" onclick="applyPreset('blacklist')">Blacklist $1,200 (Freeze)</button>
+              <button class="preset-pill" onclick="applyPreset('puppet')">Puppet $200 (Equiv Class)</button>
+            </div>
+          </div>
+
+          <form onsubmit="handleScreenTransaction(event)">
+            <div class="form-row">
+              <div class="form-col form-group">
+                <label>Sender Account ID</label>
+                <input type="text" id="sender_id" value="ACC_CHARLIE" required>
+              </div>
+              <div class="form-col form-group">
+                <label>Receiver Account ID</label>
+                <input type="text" id="receiver_id" value="ACC_BOB" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col form-group">
+                <label>Amount ($)</label>
+                <input type="number" step="0.01" id="amount" value="4500.00" required>
+              </div>
+              <div class="form-col form-group">
+                <label>Payment Channel</label>
+                <select id="channel">
+                  <option value="ONLINE_BANKING">ONLINE_BANKING</option>
+                  <option value="MOBILE_APP">MOBILE_APP</option>
+                  <option value="WIRE_TRANSFER">WIRE_TRANSFER</option>
+                  <option value="ATM">ATM</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col form-group">
+                <label>Device Fingerprint</label>
+                <input type="text" id="device_id" value="DEV_UNKNOWN_ATTACKER">
+              </div>
+              <div class="form-col form-group">
+                <label>IP Address</label>
+                <input type="text" id="ip_address" value="45.12.89.200">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Location</label>
+              <input type="text" id="location" value="FOREIGN_ISLANDS">
+            </div>
+
+            <button type="submit" id="submit-btn" class="btn btn-primary" style="width:100%; margin-top: 6px;">
+              Screen Transaction with AI Rational Agent
+            </button>
+          </form>
+        </div>
+
+        <!-- Telemetry & Decision Result -->
+        <div class="card">
+          <div class="card-title">
+            <span>Rational Agent Telemetry</span>
+            <span class="badge-tag">AI U1 + Snowflake</span>
+          </div>
+
+          <div class="result-header">
+            <div>
+              <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Screening Decision</div>
+              <div id="decision-badge" class="decision-badge badge-APPROVE">WAITING</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Posterior Probability</div>
+              <div id="risk-val-text" style="font-size:15px; font-weight:700; color:#fff;">0.0% (PENDING)</div>
+            </div>
+          </div>
+
+          <!-- Snowflake 64-bit ID Details -->
+          <div class="snowflake-box">
+            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Generated 64-bit Snowflake ID</div>
+            <div class="snowflake-id-val" id="snow-id-val">TXN_SNOW_PENDING</div>
+            <div class="snowflake-meta-grid">
+              <div>Timestamp: <span id="snow-time">-</span></div>
+              <div>Datacenter ID: <span id="snow-dc">-</span></div>
+              <div>Worker ID: <span id="snow-worker">-</span></div>
+              <div>Sequence: <span id="snow-seq">-</span></div>
+            </div>
+          </div>
+
+          <!-- Risk Meter Bar -->
+          <div class="meter-container">
+            <div class="meter-labels">
+              <span>Risk Meter</span>
+              <span style="font-size:11px; color:var(--text-muted);">P(Fraud | Percept)</span>
+            </div>
+            <div class="meter-bar-bg">
+              <div class="meter-bar-fill" id="risk-meter-fill"></div>
+            </div>
+          </div>
+
+          <!-- AI Expected Utility Payoff Matrix -->
+          <div style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">
+            AI Expected Utility Payoffs EU(a) [Rational Choice = max EU(a)]:
+          </div>
+          <div class="utility-grid" id="utility-grid">
+            <div class="utility-card"><div class="utility-title">APPROVE</div><div class="utility-val">$0.00</div></div>
+            <div class="utility-card"><div class="utility-title">FLAG REVIEW</div><div class="utility-val">$0.00</div></div>
+            <div class="utility-card"><div class="utility-title">FREEZE</div><div class="utility-val">$0.00</div></div>
+          </div>
+
+          <!-- Audit Console -->
+          <div style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">
+            Multi-Disciplinary Reasoning Audit Log:
+          </div>
+          <div class="audit-console" id="audit-console">Select a preset above and click "Screen Transaction" to inspect live mathematical deductions...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: ADSA Network Graph Visualizer -->
+    <div id="tab-graph" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span>Transaction Network Directed Graph (ADSA Unit 2)</span>
+          <button class="btn btn-secondary" onclick="fetchGraphData()">Redraw Network</button>
+        </div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom: 12px;">
+          Visualizes accounts as vertices $V$ and transactions as directed weighted edges $E = (u, v, w)$. 
+          Directed cycles (e.g. $A \to B \to C \to A$) detected via 3-color DFS are highlighted in <strong style="color:var(--color-freeze)">pulsing red</strong>.
+          Mule clusters sharing hardware fingerprints in $A/R_{\text{device}}$ are highlighted in <strong style="color:var(--accent-purple)">purple</strong>.
+        </p>
+        <div class="canvas-wrapper">
+          <canvas id="network-canvas"></canvas>
+          <div class="graph-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#0284c7;"></div> Verified Account</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#a855f7;"></div> Mule Farm [DEV_FARM_X]</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ef4444;"></div> Blacklisted Entity</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ef4444; width:16px; height:3px; border-radius:0;"></div> Laundering Cycle Edge</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: DMGT Logic & Relations Lab -->
+    <div id="tab-dmgt" class="tab-content">
+      <div class="two-col-grid">
+        <div class="card">
+          <div class="card-title">
+            <span>DMGT Unit 1: Propositional Logic Rule Engine</span>
+            <span class="badge-tag">Truth Tables & AST</span>
+          </div>
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">
+            Evaluates fraud rules as formal implications $\text{Condition} \implies \text{Flag}$. If the antecedent evaluates to True, Modus Ponens fires the consequent flag.
+          </p>
+          <div id="rules-container">Loading rules and formal truth tables...</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span>DMGT Unit 2: Transaction Relations & Equivalence Classes</span>
+            <span class="badge-tag">Quotient Set A / R</span>
+          </div>
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">
+            Evaluates binary relations $R \subseteq A \times A$ over device fingerprints, IP addresses, and national IDs.
+            Proves Reflexive, Symmetric, and Transitive properties to partition accounts into equivalence classes $[x]$.
+          </p>
+          
+          <div style="background:#0a0f1d; border:1px solid var(--border-color); border-radius:8px; padding:14px; margin-bottom:14px;">
+            <div style="font-weight:700; color:var(--accent-cyan); font-size:13px; margin-bottom:6px;">Relation $R_{\text{device}}$ Properties:</div>
+            <ul style="font-size:12px; color:var(--text-muted); padding-left:18px; line-height:1.8;">
+              <li><strong>Reflexive:</strong> $\forall x \in A, (x, x) \in R$ (Every account shares its device with itself).</li>
+              <li><strong>Symmetric:</strong> $(x, y) \in R \implies (y, x) \in R$ (Device sharing is bidirectional).</li>
+              <li><strong>Transitive:</strong> $(x, y) \in R \land (y, z) \in R \implies (x, z) \in R$ (Equivalence links propagate).</li>
+              <li><strong>Equivalence Relation:</strong> <strong style="color:var(--color-approve)">TRUE (Valid Partition)</strong></li>
+            </ul>
+          </div>
+
+          <div style="font-weight:700; color:#fff; font-size:13px; margin-bottom:8px;">Quotient Set $A / R_{\text{device}}$ (Partition Clusters):</div>
+          <div style="font-size:12px; line-height:1.8;">
+            <div style="background:#131c2e; padding:10px 14px; border-radius:6px; border:1px solid var(--border-color); margin-bottom:8px;">
+              <span class="badge-tag" style="background:rgba(168, 85, 247, 0.2); color:var(--accent-purple);">Mule Farm Syndicate</span>
+              <code>[ACC_MULE_1, ACC_MULE_2, ACC_MULE_3]</code> — All linked to hardware <code>DEV_FARM_X</code>.
+            </div>
+            <div style="background:#131c2e; padding:10px 14px; border-radius:6px; border:1px solid var(--border-color); margin-bottom:8px;">
+              <span class="badge-tag" style="background:rgba(239, 68, 68, 0.2); color:var(--color-freeze);">Compromised Cluster</span>
+              <code>[ACC_MALLORY_FRAUD, ACC_PUPPET_CLEAN]</code> — Shared device <code>DEV_DARK_NET_01</code> propagates risk to clean puppet!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Snowflake Warehouse Explorer -->
+    <div id="tab-snowflake" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span>Snowflake Cloud Data Warehouse — FACT_TRANSACTIONS Real-Time Ledger</span>
+          <button class="btn btn-secondary" onclick="refreshWarehouseData()">Refresh</button>
+        </div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">
+          All screened transactions and their multi-disciplinary audit traces are committed to Snowflake Cloud Data Warehouse dimensional tables.
+        </p>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Snowflake Txn ID</th>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Amount</th>
+                <th>P(Fraud)</th>
+                <th>Risk Tier</th>
+                <th>Action Decision</th>
+              </tr>
+            </thead>
+            <tbody id="warehouse-tbody">
+              <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Loading transactions from Snowflake...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: Syllabus & Architecture Guide -->
+    <div id="tab-curriculum" class="tab-content">
+      <div class="card">
+        <div class="card-title"><span>Curriculum & Academic Syllabus Integration</span></div>
+        <div class="two-col-grid" style="margin-top: 14px;">
+          <div>
+            <h3 style="font-size:14px; color:var(--accent-cyan); margin-bottom:6px;">1. DMGT (Discrete Mathematics & Graph Theory)</h3>
+            <p style="font-size:12px; color:var(--text-muted); line-height:1.6; margin-bottom:14px;">
+              <strong>Unit 1:</strong> Propositional logic AST with connectives ($\neg, \land, \lor, \implies, \iff$), Modus Ponens inference, and $2^n$-row truth tables.<br>
+              <strong>Unit 2:</strong> Binary relations $R \subseteq A \times A$, equivalence relation properties, quotient set $A/R$, and multi-hop relational composition $R \circ S$.
+            </p>
+
+            <h3 style="font-size:14px; color:var(--accent-cyan); margin-bottom:6px;">2. AI (Artificial Intelligence)</h3>
+            <p style="font-size:12px; color:var(--text-muted); line-height:1.6; margin-bottom:14px;">
+              <strong>Unit 1:</strong> Rational Agent architecture based on PEAS framework. Evaluates posterior fraud belief $P(\text{Fraud})$ and selects action maximizing Expected Utility: $a^* = \arg\max_{a} EU(a)$.
+            </p>
+          </div>
+
+          <div>
+            <h3 style="font-size:14px; color:var(--accent-cyan); margin-bottom:6px;">3. ADSA (Advanced Data Structures & Algorithms)</h3>
+            <p style="font-size:12px; color:var(--text-muted); line-height:1.6; margin-bottom:14px;">
+              <strong>Unit 2:</strong> Transaction network represented as a Directed Graph with adjacency lists. Employs 3-color DFS cycle detection for circular money laundering ($A \to B \to C \to A$) and fan-in velocity analysis for smurfing rings.
+            </p>
+
+            <h3 style="font-size:14px; color:var(--accent-cyan); margin-bottom:6px;">4. Bottle & Snowflake Frameworks</h3>
+            <p style="font-size:12px; color:var(--text-muted); line-height:1.6;">
+              <strong>Bottle:</strong> WSGI micro-web server providing RESTful JSON APIs and this dashboard.<br>
+              <strong>Snowflake:</strong> 64-bit distributed ID generation (Twitter Snowflake specification) and cloud data warehouse dimensional schema (`FACT_TRANSACTIONS`, `DIM_ACCOUNTS`, `DIM_ANOMALY_AUDIT`).
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
