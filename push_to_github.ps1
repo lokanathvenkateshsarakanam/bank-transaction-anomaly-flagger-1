@@ -1,21 +1,21 @@
 # PowerShell Automated GitHub Push & Fork Sync Utility
 # Profiles:
-# 1. Main Profile: https://github.com/lokanathvenkateshsarakanam
+# 1. Main Profile: https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger-1
 # 2. Fork Profile: https://github.com/saitejaavala946-jpg (Sai Teja Avala)
 
 Write-Host "==========================================================================" -ForegroundColor Cyan
 Write-Host "  BANK TRANSACTION ANOMALY FLAGGER - GITHUB PUSH & FORK SYNC UTILITY       " -ForegroundColor Cyan
 Write-Host "==========================================================================" -ForegroundColor Cyan
-Write-Host "  Main Repo Profile : https://github.com/lokanathvenkateshsarakanam" -ForegroundColor Yellow
+Write-Host "  Main Repo Profile : https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger-1" -ForegroundColor Yellow
 Write-Host "  Fork Repo Profile : https://github.com/saitejaavala946-jpg" -ForegroundColor Magenta
 Write-Host "==========================================================================" -ForegroundColor Cyan
 Write-Host ""
 
 # Ensure git remotes are properly configured
 git remote remove origin 2>$null
-git remote add origin https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger.git
+git remote add origin https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger-1.git
 git remote remove fork 2>$null
-git remote add fork https://github.com/saitejaavala946-jpg/bank-transaction-anomaly-flagger.git
+git remote add fork https://github.com/saitejaavala946-jpg/bank-transaction-anomaly-flagger-1.git
 
 Write-Host "Git Remotes Configured:" -ForegroundColor Green
 git remote -v
@@ -50,11 +50,11 @@ switch ($choice) {
         $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($token)
         $plainToken = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
         
-        $pushUrl = "https://$($username):$($plainToken)@github.com/$($username)/bank-transaction-anomaly-flagger.git"
-        Write-Host "Pushing to https://github.com/$username/bank-transaction-anomaly-flagger..." -ForegroundColor Yellow
+        $pushUrl = "https://$($username):$($plainToken)@github.com/$($username)/bank-transaction-anomaly-flagger-1.git"
+        Write-Host "Pushing to https://github.com/$username/bank-transaction-anomaly-flagger-1..." -ForegroundColor Yellow
         git push -u $pushUrl main
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "`nSUCCESS: Code pushed to https://github.com/$username/bank-transaction-anomaly-flagger" -ForegroundColor Green
+            Write-Host "`nSUCCESS: Code pushed to https://github.com/$username/bank-transaction-anomaly-flagger-1" -ForegroundColor Green
         }
     }
 
@@ -67,7 +67,7 @@ switch ($choice) {
         Write-Host "`nChecking if repository exists on saitejaavala946-jpg..." -ForegroundColor Yellow
         gh auth status 2>$null
         if ($LASTEXITCODE -eq 0) {
-            gh repo create saitejaavala946-jpg/bank-transaction-anomaly-flagger --public --source=. --remote=fork --push
+            gh repo create saitejaavala946-jpg/bank-transaction-anomaly-flagger-1 --public --source=. --remote=fork --push
         } else {
             Write-Host "Pushing to fork remote (saitejaavala946-jpg)..." -ForegroundColor Yellow
             git push -u fork main
@@ -82,7 +82,7 @@ switch ($choice) {
     }
 
     "6" {
-        $forkUrl = "https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger/fork"
+        $forkUrl = "https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger-1/fork"
         Write-Host "`nOpening Fork URL: $forkUrl" -ForegroundColor Cyan
         Start-Process $forkUrl
     }
