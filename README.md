@@ -159,7 +159,21 @@ Starts the Bottle micro-web server on `http://localhost:3030/`. Open this URL in
 ```bash
 python -m unittest discover -s tests -p "test_*.py"
 ```
-Runs all 25 unit tests across DMGT, ADSA, AI, OOPJ, Snowflake, and Bottle frameworks.
+Runs all 33 unit tests across DMGT, ADSA, AI, OOPJ, Snowflake, Bottle, and Security frameworks.
+
+### 4. Deploying to Vercel (1-Click Cloud Deployment)
+
+The repository is configured for serverless deployment on **Vercel** via `vercel.json` and `api/index.py`:
+
+1. Push your repository to GitHub:
+   ```bash
+   git push -u origin main
+   ```
+2. Log into [Vercel](https://vercel.com/) and click **"Add New Project"** $\to$ **"Project"**.
+3. Import `lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger`.
+4. Click **Deploy** *(Vercel will detect `requirements.txt`, install dependencies, and build the serverless functions)*.
+5. Your live app will be accessible at:
+   `https://bank-transaction-anomaly-flagger.vercel.app` (or your custom Vercel domain).
 
 ---
 
