@@ -150,7 +150,7 @@ This runs the full CLI pipeline:
 ```bash
 python web_app.py
 ```
-Starts the Bottle micro-web server on `http://localhost:3000/`. Open this URL in any browser to:
+Starts the Bottle micro-web server on `http://localhost:3030/`. Open this URL in any browser to:
 - Test custom transactions in real-time.
 - View live Snowflake warehouse ledger records.
 - Inspect the complete audit trail and Expected Utility payoff matrix.

@@ -168,7 +168,7 @@ def run_simulation() -> None:
     print(" BOTTLE WEB APPLICATION READY")
     print(" To launch the interactive web dashboard & REST API server, run:")
     print("     python web_app.py")
-    print(" Then open your browser at: http://localhost:3000/")
+    print(" Then open your browser at: http://localhost:3030/")
     print("=" * 80)
 
 
