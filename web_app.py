@@ -627,7 +627,7 @@ def serve_dashboard() -> Any:
     return DASHBOARD_HTML
 
 
-def run_web_server(host: str = "127.0.0.1", port: int = 3000) -> None:
+def run_web_server(host: str = "127.0.0.1", port: int = 3030) -> None:
     """Starts the Bottle WSGI HTTP server."""
     # Allow port override from environment variable or command line argument
     if "PORT" in os.environ:
