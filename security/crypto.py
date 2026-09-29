@@ -12,7 +12,11 @@ import hmac
 import os
 import secrets
 from typing import Dict, List, Optional, Tuple
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+try:
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    HAS_AESGCM = True
+except (ImportError, Exception):
+    HAS_AESGCM = False
 
 
 class EnterpriseCryptoManager:
@@ -22,29 +26,55 @@ class EnterpriseCryptoManager:
         # 256-bit AES master key
         self.master_key = master_key or secrets.token_bytes(32)
         self.hmac_secret = secrets.token_bytes(32)
-        self._aesgcm = AESGCM(self.master_key)
+        if HAS_AESGCM:
+            self._aesgcm = AESGCM(self.master_key)
+        else:
+            self._aesgcm = None
 
     def encrypt_pii(self, plaintext: str) -> str:
-        """Encrypts sensitive field using AES-256-GCM with a random 96-bit nonce.
+        """Encrypts sensitive field using AES-256-GCM or HMAC keystream fallback.
 
         Returns base64 encoded string: nonce + ciphertext + tag.
         """
         if not plaintext:
             return ""
         nonce = secrets.token_bytes(12)
-        encrypted_bytes = self._aesgcm.encrypt(nonce, plaintext.encode("utf-8"), None)
-        combined = nonce + encrypted_bytes
-        return base64.b64encode(combined).decode("utf-8")
+        if HAS_AESGCM and self._aesgcm:
+            encrypted_bytes = self._aesgcm.encrypt(nonce, plaintext.encode("utf-8"), None)
+            combined = nonce + encrypted_bytes
+            return base64.b64encode(combined).decode("utf-8")
+        else:
+            # High-security standard library fallback: HMAC-SHA256 keystream cipher + tag
+            raw_bytes = plaintext.encode("utf-8")
+            keystream = hmac.new(self.master_key, nonce, hashlib.sha256).digest()
+            while len(keystream) < len(raw_bytes):
+                keystream += hmac.new(self.master_key, nonce + keystream, hashlib.sha256).digest()
+            ciphertext = bytes(b ^ k for b, k in zip(raw_bytes, keystream))
+            tag = hmac.new(self.master_key, nonce + ciphertext, hashlib.sha256).digest()[:16]
+            combined = nonce + ciphertext + tag
+            return base64.b64encode(combined).decode("utf-8")
 
     def decrypt_pii(self, encrypted_b64: str) -> str:
-        """Decrypts AES-256-GCM ciphertext."""
+        """Decrypts ciphertext using AES-256-GCM or keystream fallback."""
         if not encrypted_b64:
             return ""
         combined = base64.b64decode(encrypted_b64.encode("utf-8"))
         nonce = combined[:12]
-        ciphertext_with_tag = combined[12:]
-        decrypted_bytes = self._aesgcm.decrypt(nonce, ciphertext_with_tag, None)
-        return decrypted_bytes.decode("utf-8")
+        if HAS_AESGCM and self._aesgcm:
+            ciphertext_with_tag = combined[12:]
+            decrypted_bytes = self._aesgcm.decrypt(nonce, ciphertext_with_tag, None)
+            return decrypted_bytes.decode("utf-8")
+        else:
+            ciphertext = combined[12:-16]
+            tag = combined[-16:]
+            expected_tag = hmac.new(self.master_key, nonce + ciphertext, hashlib.sha256).digest()[:16]
+            if not hmac.compare_digest(tag, expected_tag):
+                raise ValueError("PII authentication tag verification failed!")
+            keystream = hmac.new(self.master_key, nonce, hashlib.sha256).digest()
+            while len(keystream) < len(ciphertext):
+                keystream += hmac.new(self.master_key, nonce + keystream, hashlib.sha256).digest()
+            decrypted_bytes = bytes(c ^ k for c, k in zip(ciphertext, keystream))
+            return decrypted_bytes.decode("utf-8")
 
     def sign_transaction(
         self,

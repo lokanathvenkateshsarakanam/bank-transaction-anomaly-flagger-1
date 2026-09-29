@@ -14,5 +14,5 @@ if PROJECT_ROOT not in sys.path:
 # Import the configured Bottle application
 from web_app import app
 
-# Vercel WSGI Handler
-handler = app
+# Vercel's @vercel/python builder automatically detects and wraps WSGI
+# applications when `app` is exposed at module level.
