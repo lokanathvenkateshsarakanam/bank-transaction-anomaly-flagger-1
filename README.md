@@ -1,5 +1,7 @@
 # Bank Transaction Anomaly Flagger (First-Pass Fraud Screen)
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Flokanathvenkateshsarakanam%2Fbank-transaction-anomaly-flagger-1)
+
 > **Problem Statement:** A bank wants a first-pass fraud screen before a transaction reaches manual review.  
 > **Curriculum Integration:** 
 > - **DMGT (U1)**: Propositional-Logic Rule Engine  
