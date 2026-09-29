@@ -617,6 +617,32 @@ def serve_static(filepath: str) -> Any:
     return static_file(filepath, root=STATIC_DIR)
 
 
+@app.route("/css/<filepath:path>", method="GET")
+def serve_css(filepath: str) -> Any:
+    """Serves CSS files from css/ directory."""
+    css_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "css")
+    return static_file(filepath, root=css_dir)
+
+
+@app.route("/js/<filepath:path>", method="GET")
+def serve_js(filepath: str) -> Any:
+    """Serves JS files from js/ directory."""
+    js_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "js")
+    return static_file(filepath, root=js_dir)
+
+
+@app.route("/style.css", method="GET")
+def serve_style_root() -> Any:
+    """Serves root style.css."""
+    return static_file("style.css", root=os.path.dirname(os.path.abspath(__file__)))
+
+
+@app.route("/script.js", method="GET")
+def serve_script_root() -> Any:
+    """Serves root script.js."""
+    return static_file("script.js", root=os.path.dirname(os.path.abspath(__file__)))
+
+
 @app.route("/", method="GET")
 def serve_dashboard() -> Any:
     """Serves the rich interactive single-page dashboard website."""
