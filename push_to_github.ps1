@@ -3,11 +3,13 @@
 # 1. Main Profile: https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger-1
 # 2. Fork Profile: https://github.com/saitejaavala946-jpg (Sai Teja Avala)
 
+Clear-Host
 Write-Host "==========================================================================" -ForegroundColor Cyan
-Write-Host "  BANK TRANSACTION ANOMALY FLAGGER - GITHUB PUSH & FORK SYNC UTILITY       " -ForegroundColor Cyan
+Write-Host "  BANK TRANSACTION ANOMALY FLAGGER - GITHUB PUSH & FORK UTILITY           " -ForegroundColor Cyan
 Write-Host "==========================================================================" -ForegroundColor Cyan
-Write-Host "  Main Repo Profile : https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger-1" -ForegroundColor Yellow
-Write-Host "  Fork Repo Profile : https://github.com/saitejaavala946-jpg" -ForegroundColor Magenta
+Write-Host "  Main Account  : https://github.com/lokanathvenkateshsarakanam" -ForegroundColor Yellow
+Write-Host "  Target Repo   : bank-transaction-anomaly-flagger-1" -ForegroundColor Yellow
+Write-Host "  Browser Login : https://github.com/saitejaavala946-jpg (Sai Teja Avala)" -ForegroundColor Magenta
 Write-Host "==========================================================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -17,28 +19,40 @@ git remote add origin https://github.com/lokanathvenkateshsarakanam/bank-transac
 git remote remove fork 2>$null
 git remote add fork https://github.com/saitejaavala946-jpg/bank-transaction-anomaly-flagger-1.git
 
-Write-Host "Git Remotes Configured:" -ForegroundColor Green
-git remote -v
+Write-Host "Choose how you want to push to GitHub:" -ForegroundColor White
 Write-Host ""
-
-Write-Host "Select an action to perform:" -ForegroundColor White
-Write-Host "  [1] Interactive Web Login via GitHub CLI (gh auth login) & Push" -ForegroundColor Green
-Write-Host "  [2] Push using GitHub Personal Access Token (PAT)" -ForegroundColor Yellow
-Write-Host "  [3] Push using Standard Windows Git Credential Manager (Browser popup)" -ForegroundColor Cyan
-Write-Host "  [4] Push directly to 'saitejaavala946-jpg' profile (Current Browser Account)" -ForegroundColor Magenta
-Write-Host "  [5] Push to BOTH accounts (lokanathvenkateshsarakanam & saitejaavala946-jpg)" -ForegroundColor Blue
+Write-Host "  [1] Push to 'lokanathvenkateshsarakanam' via Interactive Browser Login (Recommended)" -ForegroundColor Green
+Write-Host "      -> Logs in as lokanathvenkateshsarakanam in browser, then pushes to main repo." -ForegroundColor Gray
+Write-Host ""
+Write-Host "  [2] Push to 'lokanathvenkateshsarakanam' using Personal Access Token (PAT)" -ForegroundColor Yellow
+Write-Host "      -> Paste your token from https://github.com/settings/tokens" -ForegroundColor Gray
+Write-Host ""
+Write-Host "  [3] Push directly to 'saitejaavala946-jpg' (Your Current Logged-In Account)" -ForegroundColor Magenta
+Write-Host "      -> Creates and pushes to https://github.com/saitejaavala946-jpg/bank-transaction-anomaly-flagger-1" -ForegroundColor Gray
+Write-Host ""
+Write-Host "  [4] Standard Git Push via Windows Credential Manager" -ForegroundColor Cyan
+Write-Host "      -> Prompts Windows Git Credential Manager popup." -ForegroundColor Gray
+Write-Host ""
+Write-Host "  [5] Push to BOTH accounts" -ForegroundColor Blue
+Write-Host ""
 Write-Host "  [6] Open 1-Click Fork page in default browser" -ForegroundColor White
+Write-Host "      -> https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger-1/fork" -ForegroundColor Gray
 Write-Host ""
 
 $choice = Read-Host "Enter option number (1-6)"
 
 switch ($choice) {
     "1" {
-        Write-Host "`nLaunching GitHub interactive login..." -ForegroundColor Yellow
+        Write-Host "`n[1/2] Authenticating with GitHub..." -ForegroundColor Yellow
         gh auth login -h github.com -p https -w
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "Pushing to origin (lokanathvenkateshsarakanam)..." -ForegroundColor Green
+            Write-Host "`n[2/2] Pushing to https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger-1..." -ForegroundColor Green
             git push -u origin main
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "`nSUCCESS: Code pushed to main repository!" -ForegroundColor Green
+                Write-Host "Opening Fork URL so you can fork into saitejaavala946-jpg in 1 click..." -ForegroundColor Cyan
+                Start-Process "https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger-1/fork"
+            }
         }
     }
 
@@ -55,29 +69,38 @@ switch ($choice) {
         git push -u $pushUrl main
         if ($LASTEXITCODE -eq 0) {
             Write-Host "`nSUCCESS: Code pushed to https://github.com/$username/bank-transaction-anomaly-flagger-1" -ForegroundColor Green
+            Write-Host "Opening Fork URL in browser..." -ForegroundColor Cyan
+            Start-Process "https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger-1/fork"
         }
     }
 
     "3" {
-        Write-Host "`nPushing to origin main via Git Credential Manager..." -ForegroundColor Yellow
-        git push -u origin main
-    }
-
-    "4" {
-        Write-Host "`nChecking if repository exists on saitejaavala946-jpg..." -ForegroundColor Yellow
+        Write-Host "`nPushing to saitejaavala946-jpg repository..." -ForegroundColor Magenta
+        # Check if repo exists via gh or push
         gh auth status 2>$null
         if ($LASTEXITCODE -eq 0) {
             gh repo create saitejaavala946-jpg/bank-transaction-anomaly-flagger-1 --public --source=. --remote=fork --push
         } else {
-            Write-Host "Pushing to fork remote (saitejaavala946-jpg)..." -ForegroundColor Yellow
             git push -u fork main
+        }
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "`nSUCCESS: Repository live at https://github.com/saitejaavala946-jpg/bank-transaction-anomaly-flagger-1" -ForegroundColor Green
+        }
+    }
+
+    "4" {
+        Write-Host "`nPushing to origin main via Git Credential Manager..." -ForegroundColor Yellow
+        git push -u origin main
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "`nSUCCESS! Opening Fork URL..." -ForegroundColor Green
+            Start-Process "https://github.com/lokanathvenkateshsarakanam/bank-transaction-anomaly-flagger-1/fork"
         }
     }
 
     "5" {
-        Write-Host "`nPushing to Origin (lokanathvenkateshsarakanam)..." -ForegroundColor Yellow
+        Write-Host "`n[1/2] Pushing to Origin (lokanathvenkateshsarakanam)..." -ForegroundColor Yellow
         git push -u origin main
-        Write-Host "`nPushing to Fork (saitejaavala946-jpg)..." -ForegroundColor Magenta
+        Write-Host "`n[2/2] Pushing to Fork (saitejaavala946-jpg)..." -ForegroundColor Magenta
         git push -u fork main
     }
 
@@ -92,4 +115,5 @@ switch ($choice) {
     }
 }
 
-Write-Host "`nDone." -ForegroundColor Cyan
+Write-Host "`nPress any key to exit..." -ForegroundColor Gray
+$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
