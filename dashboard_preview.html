@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bank Transaction Anomaly Flagger - Interactive Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --border: #1f2d42;
+      --accent: #38bdf8;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --purple: #a855f7;
+    }
+    body { background-color: var(--bg); color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; }
+    .badge-pill { padding: 4px 10px; border-radius: 9999px; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; }
+  </style>
+</head>
+<body class="p-6 antialiased">
+  
+  <!-- Header -->
+  <div class="glass-card p-6 mb-6 flex flex-wrap justify-between items-center gap-4 border-l-4 border-l-sky-500">
+    <div>
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🛡️</span>
+        <h1 class="text-2xl font-bold text-white tracking-tight">Bank Transaction Anomaly Flagger</h1>
+        <span class="px-2.5 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-800 text-xs font-semibold">FIRST-PASS SCREEN</span>
+      </div>
+      <p class="text-slate-400 text-xs mt-1.5 flex gap-2 flex-wrap">
+        <span class="text-sky-400 font-medium">DMGT (U1/U2)</span> • 
+        <span class="text-purple-400 font-medium">AI Rational Agent (U1)</span> • 
+        <span class="text-emerald-400 font-medium">ADSA Graph (U2)</span> • 
+        <span class="text-amber-400 font-medium">OOPJ</span> • 
+        <span class="text-pink-400 font-medium">Bottle WSGI</span> • 
+        <span class="text-blue-400 font-medium">Snowflake Framework</span>
+      </p>
+    </div>
+    <div class="flex gap-3">
+      <span class="px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-slate-300 text-xs font-mono">
+        Snowflake 64-bit ID: <strong class="text-purple-400">ACTIVE</strong>
+      </span>
+      <span class="px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-400 text-xs font-mono">
+        Bottle WSGI: <strong class="text-emerald-300">ONLINE</strong>
+      </span>
+    </div>
+  </div>
+
+  <!-- Metric Counters -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="glass-card p-4">
+      <div class="text-xs uppercase text-slate-400 font-semibold tracking-wider">Snowflake Ledger Count</div>
+      <div class="text-2xl font-bold text-white mt-1" id="stat-count">8</div>
+      <div class="text-[11px] text-sky-400 mt-1">FACT_TRANSACTIONS entries</div>
+    </div>
+    <div class="glass-card p-4">
+      <div class="text-xs uppercase text-slate-400 font-semibold tracking-wider">Mean Network Risk</div>
+      <div class="text-2xl font-bold text-white mt-1" id="stat-risk">38.1%</div>
+      <div class="text-[11px] text-amber-400 mt-1">Posterior fraud belief P(Fraud)</div>
+    </div>
+    <div class="glass-card p-4">
+      <div class="text-xs uppercase text-slate-400 font-semibold tracking-wider">Screened Volume</div>
+      <div class="text-2xl font-bold text-white mt-1" id="stat-vol">$42,845.00</div>
+      <div class="text-[11px] text-emerald-400 mt-1">Protected capital</div>
+    </div>
+    <div class="glass-card p-4">
+      <div class="text-xs uppercase text-slate-400 font-semibold tracking-wider">Twitter Snowflake Spec</div>
+      <div class="text-lg font-bold text-purple-400 mt-1">41b+5b+5b+12b</div>
+      <div class="text-[11px] text-slate-400 mt-1">k-Ordered Distributed IDs</div>
+    </div>
+  </div>
+
+  <!-- Presets -->
+  <div class="glass-card p-4 mb-6">
+    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Select Curriculum Verification Preset:</div>
+    <div class="flex flex-wrap gap-2">
+      <button onclick="loadScenario('routine')" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 hover:border-sky-500 transition">
+        🛒 Routine Grocery ($45, Benign)
+      </button>
+      <button onclick="loadScenario('ato')" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 hover:border-sky-500 transition">
+        🚨 Account Takeover ($4,500, DMGT Logic)
+      </button>
+      <button onclick="loadScenario('cycle')" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 hover:border-sky-500 transition">
+        🔄 Layering Cycle ($9,300, ADSA 3-Color DFS)
+      </button>
+      <button onclick="loadScenario('smurf')" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 hover:border-sky-500 transition">
+        👥 Smurfing Mule Farm ($9,200, Fan-In + Equiv)
+      </button>
+      <button onclick="loadScenario('blacklist')" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 hover:border-sky-500 transition">
+        ⛔ Blacklist Direct ($1,200, AI Utility Freeze)
+      </button>
+      <button onclick="loadScenario('puppet')" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 hover:border-sky-500 transition">
+        🎭 Puppet Clean Account ($200, DMGT U2 Equiv)
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+    <!-- Form -->
+    <div class="glass-card p-5 lg:col-span-5 flex flex-col justify-between">
+      <div>
+        <h2 class="text-base font-bold text-white border-b border-slate-800 pb-3 mb-4 flex justify-between items-center">
+          <span>Transaction Inputs (Sensors)</span>
+          <span class="text-xs font-mono text-sky-400">Bottle POST Payload</span>
+        </h2>
+        
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Sender Account</label>
+            <input type="text" id="in_sender" value="ACC_CHARLIE" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Receiver Account</label>
+            <input type="text" id="in_receiver" value="ACC_BOB" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Amount ($)</label>
+            <input type="number" id="in_amount" value="4500.00" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Channel</label>
+            <select id="in_channel" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+              <option value="ONLINE_BANKING">ONLINE_BANKING</option>
+              <option value="MOBILE_APP">MOBILE_APP</option>
+              <option value="WIRE_TRANSFER">WIRE_TRANSFER</option>
+              <option value="ATM">ATM</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Device Fingerprint</label>
+            <input type="text" id="in_device" value="DEV_UNKNOWN_ATTACKER" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">IP Address</label>
+            <input type="text" id="in_ip" value="45.12.89.200" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Geo Location</label>
+          <input type="text" id="in_loc" value="FOREIGN_ISLANDS" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+        </div>
+      </div>
+
+      <button onclick="runSimulationScreen()" class="w-full py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 font-semibold text-xs text-white shadow-lg shadow-sky-900/40 transition">
+        Execute Screening via AI Rational Agent & Ingest to Snowflake
+      </button>
+    </div>
+
+    <!-- Output Telemetry -->
+    <div class="glass-card p-5 lg:col-span-7 flex flex-col justify-between">
+      <div>
+        <h2 class="text-base font-bold text-white border-b border-slate-800 pb-3 mb-4 flex justify-between items-center">
+          <span>AI Rational Agent & Snowflake Telemetry</span>
+          <span class="text-xs font-mono text-purple-400">Actuators</span>
+        </h2>
+
+        <!-- Decision Banner -->
+        <div class="flex justify-between items-center bg-slate-900/90 border border-slate-800 p-3.5 rounded-lg mb-4">
+          <div>
+            <div class="text-[11px] uppercase tracking-wider text-slate-400">Optimal Action Decision</div>
+            <div id="out_action" class="text-sm font-bold text-amber-400 mt-0.5">FLAG_MANUAL_REVIEW</div>
+          </div>
+          <div class="text-right">
+            <div class="text-[11px] uppercase tracking-wider text-slate-400">Posterior Fraud Belief</div>
+            <div id="out_prob" class="text-sm font-bold text-white mt-0.5">37.0% (MEDIUM)</div>
+          </div>
+        </div>
+
+        <!-- Snowflake ID Card -->
+        <div class="bg-slate-950/80 border border-slate-800 rounded-lg p-3 mb-4 font-mono text-xs">
+          <div class="text-[10px] text-slate-400 uppercase tracking-wider">Generated 64-bit Snowflake Transaction ID</div>
+          <div class="text-purple-400 font-bold text-sm mt-0.5" id="out_snow_id">TXN_SNOW_97943371628285952</div>
+          <div class="grid grid-cols-4 gap-2 mt-2 text-[10px] text-slate-400">
+            <div>Worker: <strong class="text-slate-200">1</strong></div>
+            <div>Datacenter: <strong class="text-slate-200">1</strong></div>
+            <div>Sequence: <strong class="text-slate-200">2</strong></div>
+            <div>Snowflake: <strong class="text-emerald-400">COMMITTED</strong></div>
+          </div>
+        </div>
+
+        <!-- Risk Meter -->
+        <div class="mb-4">
+          <div class="flex justify-between text-xs font-semibold text-slate-400 mb-1">
+            <span>Risk Score Meter</span>
+            <span id="out_meter_text">37.0%</span>
+          </div>
+          <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+            <div id="out_bar" class="h-full bg-amber-500 rounded-full transition-all duration-500" style="width: 37%;"></div>
+          </div>
+        </div>
+
+        <!-- Expected Utility Grid -->
+        <div class="text-xs font-semibold text-slate-400 mb-1.5">AI Expected Utility Matrix EU(a) [argmax EU(a)]:</div>
+        <div class="grid grid-cols-3 gap-2 mb-4 font-mono text-center text-xs" id="out_eu_grid">
+          <div class="p-2 rounded bg-slate-900 border border-slate-800">
+            <div class="text-[10px] text-slate-400">APPROVE</div>
+            <div class="text-red-400 font-bold">-$3,346.04</div>
+          </div>
+          <div class="p-2 rounded bg-slate-900 border border-sky-500 bg-sky-950/30">
+            <div class="text-[10px] text-sky-400">FLAG (OPTIMAL)</div>
+            <div class="text-emerald-400 font-bold">+$2,922.68</div>
+          </div>
+          <div class="p-2 rounded bg-slate-900 border border-slate-800">
+            <div class="text-[10px] text-slate-400">FREEZE</div>
+            <div class="text-slate-300 font-bold">+$1,892.00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit Trace -->
+      <div>
+        <div class="text-xs font-semibold text-slate-400 mb-1.5">Multi-Disciplinary Reasoning Trail:</div>
+        <div id="out_audit" class="bg-black/80 border border-slate-800 rounded p-3 text-sky-400 font-mono text-[11px] leading-relaxed max-h-36 overflow-y-auto whitespace-pre-wrap">
+* [DMGT-U1 Logic] [RULE_ATO_01] FIRED: Condition (P_HIGH_AMOUNT ∧ P_NEW_DEVICE) evaluated to TRUE => Flag: 'SUSPECT_ACCOUNT_TAKEOVER'
+* [Ensemble Synthesis] LogicRisk=0.60, GraphRisk=0.00, RelationRisk=0.00 => P(Fraud)=0.370
+* [AI Rational Decision] Optimal Action=FLAG_MANUAL_REVIEW with Max Expected Utility=$2,922.68
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Network Graph Preview -->
+  <div class="glass-card p-5 mb-6">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+      <h2 class="text-base font-bold text-white flex items-center gap-2">
+        <span>ADSA Unit 2: Directed Transaction Graph & Circular Cycle Layering</span>
+      </h2>
+      <span class="text-xs font-mono text-slate-400">Vertices: Accounts | Edges: Transactions</span>
+    </div>
+    <div class="h-64 bg-slate-950/90 border border-slate-800 rounded-lg relative overflow-hidden flex items-center justify-center">
+      <canvas id="preview-canvas" class="w-full h-full"></canvas>
+      <div class="absolute bottom-3 left-3 bg-slate-900/90 border border-slate-700 px-3 py-1.5 rounded text-[11px] flex gap-4 text-slate-300">
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"></span> Normal Account</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span> Mule Farm [DEV_FARM_X]</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span> Blacklist Node</span>
+        <span class="flex items-center gap-1.5"><span class="w-4 h-0.5 bg-red-500 inline-block"></span> 3-Color DFS Cycle Edge</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Creator & Contact Footer -->
+  <div class="glass-card p-6 mt-6 mb-8 text-center border-t border-slate-800">
+    <ul class="list-none p-0 mb-4">
+      <li>
+        <marquee><font color="green" size="9"><strong>this project was made by SARAKANAM . LOKANATH VENKATESH </strong></font></marquee>
+      </li>
+    </ul> 
+    <div class="flex justify-center flex-wrap gap-2 mb-4">
+      <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-sky-500 transition"><a href="mailto:lokanathvenkateshsarakanam6@gmail.com" class="text-sky-400 font-semibold no-underline"><strong>Email</strong></a></button>
+      <a href="tel:+919392573268" class="inline-block"><button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-sky-500 text-sky-400 font-semibold transition">phone</button></a>
+      <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-pink-500 transition"><a href="https://www.instagram.com/call_me_bunny_.143_2/?__pwa=1" target="_blank" class="text-pink-400 font-semibold no-underline"><strong>Instagram</strong></a></button>
+      <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 transition"><a href="https://www.linkedin.com/in/lokanath-venkatesh-sarakanam-3532a1382/" target="_blank" class="text-blue-400 font-semibold no-underline"><strong>LinkedIn</strong></a></button>
+      <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-purple-500 transition"><a href="https://github.com/lokanathvenkateshsarakanam" target="_blank" class="text-purple-400 font-semibold no-underline"><strong>github</strong></a></button>
+    </div>
+    
+    <footer class="pt-4 border-t border-slate-800 text-slate-400 text-xs">
+      <p><b> SARAKANAM.LOKANATH VENKATESH</b>&copy; 2026 . All rights reserved.</p></b>
+    </footer>
+  </div>
+
+  <script>
+    const scenarios = {
+      routine: {
+        sender: "ACC_ALICE", receiver: "ACC_BOB", amount: 45.0, channel: "MOBILE_APP", device: "DEV_ALICE_PHONE", ip: "192.168.1.10", loc: "US",
+        action: "APPROVE", prob: 0.02, tier: "LOW", color: "#10b981",
+        eu: { approve: 0.44, flag: -25.88, freeze: -111.25 },
+        audit: "* [DMGT-U1 Logic] All rules PASS (Antecedents False).\n* [ADSA-U2 Graph] No circular paths or fan-in anomalies.\n* [AI Rational Decision] Optimal Action=APPROVE (Max EU=$0.44)."
+      },
+      ato: {
+        sender: "ACC_CHARLIE", receiver: "ACC_BOB", amount: 4500.0, channel: "ONLINE_BANKING", device: "DEV_UNKNOWN_ATTACKER", ip: "45.12.89.200", loc: "FOREIGN_ISLANDS",
+        action: "FLAG_MANUAL_REVIEW", prob: 0.370, tier: "MEDIUM", color: "#f59e0b",
+        eu: { approve: -3346.04, flag: 2922.68, freeze: 1892.0 },
+        audit: "* [DMGT-U1 Logic] [RULE_ATO_01] FIRED: Condition (P_HIGH_AMOUNT ∧ P_NEW_DEVICE) => 'SUSPECT_ACCOUNT_TAKEOVER'\n* [AI Rational Decision] Optimal Action=FLAG_MANUAL_REVIEW (Max EU=$2,922.68)."
+      },
+      cycle: {
+        sender: "ACC_LAYER_C", receiver: "ACC_LAYER_A", amount: 9300.0, channel: "WIRE_TRANSFER", device: "DEV_CORP_C", ip: "127.0.0.1", loc: "US",
+        action: "FLAG_MANUAL_REVIEW", prob: 0.245, tier: "MEDIUM", color: "#f59e0b",
+        eu: { approve: -2208.28, flag: 1885.22, freeze: 447.62 },
+        audit: "* [ADSA-U2 Graph] Circular layering detected! Path: ACC_LAYER_C -> ACC_LAYER_A -> ACC_LAYER_B -> ACC_LAYER_C\n* [AI Rational Decision] Optimal Action=FLAG_MANUAL_REVIEW (Max EU=$1,885.22)."
+      },
+      smurf: {
+        sender: "ACC_MULE_1", receiver: "ACC_COLLECTOR_X", amount: 9200.0, channel: "ONLINE_BANKING", device: "DEV_FARM_X", ip: "10.0.0.99", loc: "US",
+        action: "FLAG_MANUAL_REVIEW", prob: 0.527, tier: "HIGH", color: "#f59e0b",
+        eu: { approve: -4809.53, flag: 4255.76, freeze: 3719.0 },
+        audit: "* [ADSA-U2 Graph] Smurfing/Fan-In velocity anomaly at receiver: ACC_COLLECTOR_X\n* [DMGT-U2 Relations] Shares device DEV_FARM_X with 2 other accounts\n* [AI Rational Decision] Optimal Action=FLAG_MANUAL_REVIEW (Max EU=$4,255.76)."
+      },
+      blacklist: {
+        sender: "ACC_MALLORY_FRAUD", receiver: "ACC_BOB", amount: 1200.0, channel: "WIRE_TRANSFER", device: "DEV_DARK_NET_01", ip: "185.220.101.5", loc: "US",
+        action: "FREEZE_ACCOUNT", prob: 0.950, tier: "CRITICAL", color: "#ef4444",
+        eu: { approve: -1139.40, flag: 999.80, freeze: 1120.0 },
+        audit: "* [ADSA-U2 Graph] SENDER IS ON FRAUD BLACKLIST! (0-Hop proximity)\n* [AI Rational Decision] Optimal Action=FREEZE_ACCOUNT (Max EU=$1,120.00)."
+      },
+      puppet: {
+        sender: "ACC_PUPPET_CLEAN", receiver: "ACC_ALICE", amount: 200.0, channel: "MOBILE_APP", device: "DEV_DARK_NET_01", ip: "185.220.101.5", loc: "US",
+        action: "FLAG_MANUAL_REVIEW", prob: 0.195, tier: "MEDIUM", color: "#f59e0b",
+        eu: { approve: -37.39, flag: 6.88, freeze: -81.75 },
+        audit: "* [DMGT-U2 Relations] Equivalence Class [x] includes compromised account: {'ACC_MALLORY_FRAUD'}\n* [AI Rational Decision] Optimal Action=FLAG_MANUAL_REVIEW (Max EU=$6.88)."
+      }
+    };
+
+    function loadScenario(k) {
+      const s = scenarios[k];
+      document.getElementById('in_sender').value = s.sender;
+      document.getElementById('in_receiver').value = s.receiver;
+      document.getElementById('in_amount').value = s.amount.toFixed(2);
+      document.getElementById('in_channel').value = s.channel;
+      document.getElementById('in_device').value = s.device;
+      document.getElementById('in_ip').value = s.ip;
+      document.getElementById('in_loc').value = s.loc;
+      runSimulationScreen(s);
+    }
+
+    function runSimulationScreen(presetObj) {
+      const sender = document.getElementById('in_sender').value;
+      const amt = parseFloat(document.getElementById('in_amount').value);
+      
+      let s = presetObj;
+      if (!s) {
+        if (sender.includes("MALLORY")) s = scenarios.blacklist;
+        else if (sender.includes("CHARLIE") || amt > 3000) s = scenarios.ato;
+        else if (sender.includes("LAYER")) s = scenarios.cycle;
+        else if (sender.includes("MULE")) s = scenarios.smurf;
+        else if (sender.includes("PUPPET")) s = scenarios.puppet;
+        else s = scenarios.routine;
+      }
+
+      const randomSnowflake = 97943371628285950 + Math.floor(Math.random() * 50);
+      document.getElementById('out_snow_id').innerText = `TXN_SNOW_${randomSnowflake}`;
+      document.getElementById('out_action').innerText = s.action;
+      document.getElementById('out_action').style.color = s.color;
+      document.getElementById('out_prob').innerText = `${(s.prob * 100).toFixed(1)}% (${s.tier})`;
+      document.getElementById('out_meter_text').innerText = `${(s.prob * 100).toFixed(1)}%`;
+      document.getElementById('out_bar').style.width = `${s.prob * 100}%`;
+      document.getElementById('out_bar').style.backgroundColor = s.color;
+
+      const grid = document.getElementById('out_eu_grid');
+      grid.innerHTML = `
+        <div class="p-2 rounded bg-slate-900 border ${s.action === 'APPROVE' ? 'border-sky-500 bg-sky-950/30' : 'border-slate-800'}">
+          <div class="text-[10px] text-slate-400">APPROVE</div>
+          <div class="font-bold ${s.eu.approve >= 0 ? 'text-emerald-400' : 'text-red-400'}">$${s.eu.approve.toFixed(2)}</div>
+        </div>
+        <div class="p-2 rounded bg-slate-900 border ${s.action === 'FLAG_MANUAL_REVIEW' ? 'border-sky-500 bg-sky-950/30' : 'border-slate-800'}">
+          <div class="text-[10px] text-slate-400">FLAG (REVIEW)</div>
+          <div class="font-bold ${s.eu.flag >= 0 ? 'text-emerald-400' : 'text-red-400'}">$${s.eu.flag.toFixed(2)}</div>
+        </div>
+        <div class="p-2 rounded bg-slate-900 border ${s.action === 'FREEZE_ACCOUNT' ? 'border-sky-500 bg-sky-950/30' : 'border-slate-800'}">
+          <div class="text-[10px] text-slate-400">FREEZE</div>
+          <div class="font-bold ${s.eu.freeze >= 0 ? 'text-emerald-400' : 'text-red-400'}">$${s.eu.freeze.toFixed(2)}</div>
+        </div>
+      `;
+
+      document.getElementById('out_audit').innerText = s.audit;
+    }
+
+    // Canvas drawing
+    window.onload = function() {
+      const cvs = document.getElementById('preview-canvas');
+      const ctx = cvs.getContext('2d');
+      cvs.width = cvs.parentElement.clientWidth;
+      cvs.height = cvs.parentElement.clientHeight;
+
+      const nodes = [
+        { id: "ACC_ALICE", x: 120, y: 70, type: "normal" },
+        { id: "ACC_BOB", x: 280, y: 70, type: "normal" },
+        { id: "ACC_CHARLIE", x: 120, y: 190, type: "normal" },
+        { id: "ACC_MALLORY", x: 440, y: 70, type: "blacklist" },
+        { id: "ACC_PUPPET", x: 580, y: 70, type: "mule" },
+        { id: "ACC_LAYER_A", x: 740, y: 60, type: "normal" },
+        { id: "ACC_LAYER_B", x: 880, y: 120, type: "normal" },
+        { id: "ACC_LAYER_C", x: 740, y: 190, type: "normal" },
+        { id: "MULE_1", x: 380, y: 180, type: "mule" },
+        { id: "COLLECTOR_X", x: 520, y: 190, type: "mule" },
+      ];
+
+      // Edges
+      const edges = [
+        { from: 0, to: 1, cycle: false },
+        { from: 2, to: 1, cycle: false },
+        { from: 3, to: 1, cycle: false },
+        { from: 5, to: 6, cycle: true },
+        { from: 6, to: 7, cycle: true },
+        { from: 7, to: 5, cycle: true }, // Cycle!
+        { from: 8, to: 9, cycle: false },
+      ];
+
+      edges.forEach(e => {
+        const u = nodes[e.from], v = nodes[e.to];
+        ctx.beginPath();
+        ctx.moveTo(u.x, u.y);
+        ctx.lineTo(v.x, v.y);
+        ctx.strokeStyle = e.cycle ? "#ef4444" : "rgba(56, 189, 248, 0.4)";
+        ctx.lineWidth = e.cycle ? 3 : 1.5;
+        ctx.stroke();
+      });
+
+      nodes.forEach(n => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 14, 0, Math.PI * 2);
+        ctx.fillStyle = n.type === "blacklist" ? "#ef4444" : (n.type === "mule" ? "#a855f7" : "#0284c7");
+        ctx.fill();
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = "#cbd5e1";
+        ctx.font = "10px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(n.id, n.x, n.y - 18);
+      });
+    };
+  </script>
+</body>
+</html>
